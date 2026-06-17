@@ -333,6 +333,82 @@ body {
   margin-bottom: 0.3rem;
 }
 
+/* --- Nutrition Lookup --- */
+.nutrition-form {
+  background-color: var(--white);
+  border: 1px solid #e4d8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+  max-width: 500px;
+  box-shadow: 0 8px 18px rgba(60, 14, 90, 0.08);
+}
+
+.nutrition-form-actions {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.btn-clear {
+  background-color: transparent;
+  color: var(--secondary-purple);
+  border: 1px solid var(--secondary-purple);
+  padding: 0.6rem 1.4rem;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.btn-clear:hover {
+  background-color: var(--secondary-purple);
+  color: var(--white);
+}
+
+.nutrition-loading {
+  margin-top: 1.5rem;
+  font-size: 1.1rem;
+  color: var(--secondary-purple);
+  font-weight: 600;
+}
+
+.nutrition-error {
+  margin-top: 1.5rem;
+}
+
+.nutrition-results {
+  margin-top: 1.5rem;
+}
+
+.nutrition-results h3 {
+  color: var(--primary-purple);
+  margin-bottom: 0.75rem;
+}
+
+.nutrition-card {
+  background-color: var(--white);
+  border: 1px solid #e4d8f0;
+  border-radius: 10px;
+  padding: 1rem 1.25rem;
+  margin-bottom: 0.75rem;
+  box-shadow: 0 4px 10px rgba(60, 14, 90, 0.06);
+}
+
+.nutrition-card h4 {
+  color: var(--primary-green);
+  font-size: 1.05rem;
+  margin-bottom: 0.5rem;
+  text-transform: capitalize;
+}
+
+.nutrition-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  font-size: 0.9rem;
+}
+
 @media (max-width: 700px) {
   .main-nav ul {
     justify-content: center;

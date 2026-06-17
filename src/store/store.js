@@ -9,16 +9,19 @@
   Each key in the reducer object becomes a "section" of state:
     - state.favorites (managed by favoritesSlice)
     - state.diary (managed by diarySlice)
+    - state.nutrition (managed by nutritionSlice)
 */
 
 import { configureStore } from "@reduxjs/toolkit";
 import favoritesReducer from "./favoritesSlice";
 import diaryReducer from "./diarySlice";
+import nutritionReducer from "./nutritionSlice";
 
 const store = configureStore({
   reducer: {
     favorites: favoritesReducer,
     diary: diaryReducer,
+    nutrition: nutritionReducer,
   },
 });
 
