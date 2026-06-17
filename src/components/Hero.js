@@ -12,7 +12,7 @@ function Hero() {
         <h2>Better Choices</h2>
         <p className="subtitle">Helping you make healthier decisions one meal at a time.</p>
         <p>
-          Better Choices helps users discover healthier fast food options and make informed food decisions.
+          Many people lead busy lives and do not always have the luxury of cooking meals at home. I created <strong>Better Choices</strong> to help people make healthier decisions when fast food is the most practical option. By providing nutrition information, meal comparisons, and food tracking tools, <strong>Better Choices</strong> empowers users to choose the best available option for their lifestyle and health goals.
         </p>
       </div>
     </section>

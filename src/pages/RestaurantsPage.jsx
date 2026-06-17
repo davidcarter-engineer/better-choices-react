@@ -55,6 +55,8 @@ function RestaurantsPage() {
               healthyScore={restaurant.healthyScore}
               recommendedMeal={restaurant.recommendedMeal}
               calories={restaurant.calories}
+              healthierOption={restaurant.healthierOption}
+              healthierTip={restaurant.healthierTip}
               onFavorite={() => handleAddFavorite(restaurant)}
               isFavorite={isFavorite(restaurant.name)}
             />

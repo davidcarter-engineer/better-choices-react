@@ -9,7 +9,12 @@ function About() {
       <div className="container">
         <h3>About Better Choices</h3>
         <p>
-          This project is a beginner-friendly portfolio site focused on making health information easier to understand.
+          Better Choices helps you make smarter food decisions in a busy world.
+        </p>
+        <p>
+          By combining nutrition data, meal tracking, and restaurant comparisons,
+          this app makes it easy to understand what you eat — and choose foods
+          that support your health and wellness goals.
         </p>
       </div>
     </section>

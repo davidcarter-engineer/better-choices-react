@@ -1,42 +1,73 @@
 /*
   --- SLICE: diarySlice ---
-  Manages the Food Diary state: entries and totalCalories.
+  Manages the Food Diary state organized by date.
+  Uses localStorage to persist data across browser sessions.
 
-  --- Reducers ---
-  addMeal: Adds a new meal entry and updates totalCalories.
-  removeMeal: Removes an entry by index and recalculates totalCalories.
-
-  Redux Toolkit lets us "mutate" state directly inside reducers.
-  Under the hood, Immer creates a new immutable state copy.
+  State shape:
+  {
+    entriesByDate: { "2025-01-15": [{ mealName, foodItem, calories }], ... },
+    selectedDate: "2025-01-15"
+  }
 */
 
 import { createSlice } from "@reduxjs/toolkit";
 
+// Load saved diary data from localStorage
+function loadFromStorage() {
+  try {
+    const saved = localStorage.getItem("betterChoicesDiary");
+    return saved ? JSON.parse(saved) : {};
+  } catch {
+    return {};
+  }
+}
+
+// Save diary data to localStorage
+function saveToStorage(entriesByDate) {
+  try {
+    localStorage.setItem("betterChoicesDiary", JSON.stringify(entriesByDate));
+  } catch {
+    // Storage full or unavailable — fail silently
+  }
+}
+
+// Today's date in YYYY-MM-DD format
+const today = new Date().toISOString().split("T")[0];
+
 const diarySlice = createSlice({
   name: "diary",
   initialState: {
-    entries: [],
-    totalCalories: 0,
+    entriesByDate: loadFromStorage(),
+    selectedDate: today,
   },
   reducers: {
-    // Adds a meal entry and updates the calorie total
-    addMeal(state, action) {
-      // action.payload = { mealName, foodItem, calories }
-      state.entries.push(action.payload);
-      state.totalCalories += action.payload.calories;
+    // Sets the currently selected date (when user clicks a calendar day)
+    setSelectedDate(state, action) {
+      state.selectedDate = action.payload;
     },
-    // Removes a meal by index and recalculates total
+    // Adds a meal to the selected date
+    addMeal(state, action) {
+      const date = state.selectedDate;
+      if (!state.entriesByDate[date]) {
+        state.entriesByDate[date] = [];
+      }
+      state.entriesByDate[date].push(action.payload);
+      saveToStorage(state.entriesByDate);
+    },
+    // Removes a meal by index from the selected date
     removeMeal(state, action) {
-      // action.payload = index of the entry to remove
-      const removed = state.entries[action.payload];
-      state.entries.splice(action.payload, 1);
-      state.totalCalories -= removed.calories;
+      const date = state.selectedDate;
+      if (state.entriesByDate[date]) {
+        state.entriesByDate[date].splice(action.payload, 1);
+        // Clean up empty dates
+        if (state.entriesByDate[date].length === 0) {
+          delete state.entriesByDate[date];
+        }
+        saveToStorage(state.entriesByDate);
+      }
     },
   },
 });
 
-// Export actions for dispatching from components
-export const { addMeal, removeMeal } = diarySlice.actions;
-
-// Export reducer for the store
+export const { setSelectedDate, addMeal, removeMeal } = diarySlice.actions;
 export default diarySlice.reducer;

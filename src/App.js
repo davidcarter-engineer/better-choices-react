@@ -31,6 +31,8 @@ import HomePage from "./pages/HomePage";
 import RestaurantsPage from "./pages/RestaurantsPage";
 import FavoritesPage from "./pages/FavoritesPage";
 import FoodDiaryPage from "./pages/FoodDiaryPage";
+import AboutPage from "./pages/AboutPage";
+import ContactPage from "./pages/ContactPage";
 import NutritionLookupPage from "./pages/NutritionLookupPage";
 
 function App() {
@@ -43,10 +45,12 @@ function App() {
           {/* Routes: only the Route matching the current URL will render */}
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/about" element={<AboutPage />} />
             <Route path="/restaurants" element={<RestaurantsPage />} />
             <Route path="/favorites" element={<FavoritesPage />} />
             <Route path="/food-diary" element={<FoodDiaryPage />} />
             <Route path="/nutrition-lookup" element={<NutritionLookupPage />} />
+            <Route path="/contact" element={<ContactPage />} />
           </Routes>
         </main>
         <Footer />
