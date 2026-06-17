@@ -1,40 +1,46 @@
 /*
   --- PAGE: RestaurantsPage ---
-  Displays all restaurant cards using state and effect hooks.
+  Displays all restaurant cards and lets users save favorites.
 
-  --- useState ---
-  useState creates a state variable to hold data that can change.
-  Here we store the restaurant list in state so React knows to
-  re-render when the data is loaded.
+  --- useDispatch ---
+  A React-Redux hook that returns the store's dispatch function.
+  We call dispatch(actionCreator(payload)) to send an action
+  to the Redux store, which triggers the matching reducer.
 
-  Example:
-  const [restaurants, setRestaurants] = useState([]);
-  - restaurants = the current value (starts as an empty array)
-  - setRestaurants = function to update the value
-
-  --- useEffect ---
-  useEffect runs code after the component renders (mounts).
-  We use it here to simulate loading data when the page first appears.
-  The empty dependency array [] means "run this only once."
-
-  Example:
-  useEffect(() => {
-    setRestaurants(restaurantsData);
-  }, []);
+  --- useSelector ---
+  A React-Redux hook that reads data FROM the Redux store.
+  It takes a selector function: (state) => state.sliceName.value
+  The component re-renders whenever the selected value changes.
 */
 
 import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { addFavorite } from "../store/favoritesSlice";
 import restaurantsData from "../data/restaurants";
 import RestaurantCard from "../components/RestaurantCard";
 
 function RestaurantsPage() {
-  // useState: initialize restaurants as an empty array
   const [restaurants, setRestaurants] = useState([]);
 
-  // useEffect: load restaurant data when the component mounts
   useEffect(() => {
     setRestaurants(restaurantsData);
-  }, []); // Empty dependency array = run once on mount
+  }, []);
+
+  // useDispatch: get the dispatch function to send actions to the store
+  const dispatch = useDispatch();
+
+  // useSelector: read favorites from the store to check which are saved
+  const favorites = useSelector((state) => state.favorites.favorites);
+
+  // Handler to dispatch the addFavorite action
+  function handleAddFavorite(restaurant) {
+    dispatch(addFavorite(restaurant));
+  }
+
+  // Check if a restaurant is already in favorites
+  function isFavorite(name) {
+    return favorites.some((item) => item.name === name);
+  }
 
   return (
     <section className="featured-restaurants">
@@ -49,6 +55,8 @@ function RestaurantsPage() {
               healthyScore={restaurant.healthyScore}
               recommendedMeal={restaurant.recommendedMeal}
               calories={restaurant.calories}
+              onFavorite={() => handleAddFavorite(restaurant)}
+              isFavorite={isFavorite(restaurant.name)}
             />
           ))}
         </div>

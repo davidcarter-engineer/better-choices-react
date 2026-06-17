@@ -1,75 +1,58 @@
 /*
   --- PAGE: FoodDiaryPage ---
   A form-based page for logging daily meals.
+  Now uses Redux for diary entries so data persists across page navigation.
 
   --- Controlled Components ---
-  In React, a "controlled component" is a form input whose value is
-  driven by React state. The input displays whatever is in state,
-  and the onChange handler updates state on every keystroke.
-  This gives React full control over the form data.
+  Form inputs whose value is driven by local React state (useState).
+  onChange updates state on every keystroke.
 
-  --- useState ---
-  useState creates state variables that persist across re-renders.
-  When state updates, React re-renders the component with the new values.
-  We use it here for:
-    - Individual form fields (mealName, foodItem, calories)
-    - The diary entries array (entries)
+  --- useSelector ---
+  Reads entries and totalCalories from the Redux diary slice.
 
-  --- Form Submission ---
-  We attach an onSubmit handler to the <form> element.
-  e.preventDefault() stops the browser from reloading the page.
-  After validation, we create a new entry and add it to state.
-
-  --- Updating Arrays in React State ---
-  Never mutate state directly (e.g., entries.push()).
-  Instead, create a NEW array using the spread operator:
-    setEntries([...entries, newEntry])
-  This tells React that state changed and triggers a re-render.
+  --- useDispatch ---
+  Dispatches addMeal and removeMeal actions to update the store.
 */
 
 import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { addMeal, removeMeal } from "../store/diarySlice";
 
 function FoodDiaryPage() {
-  // Controlled component state — each input is tied to state
+  // Local state for controlled form inputs
   const [mealName, setMealName] = useState("");
   const [foodItem, setFoodItem] = useState("");
   const [calories, setCalories] = useState("");
-
-  // Array state to hold all diary entries
-  const [entries, setEntries] = useState([]);
-
-  // Validation error message
   const [error, setError] = useState("");
 
-  // Form submission handler
+  // useSelector: read diary state from the Redux store
+  const entries = useSelector((state) => state.diary.entries);
+  const totalCalories = useSelector((state) => state.diary.totalCalories);
+
+  // useDispatch: get dispatch function
+  const dispatch = useDispatch();
+
   function handleSubmit(e) {
-    // Prevent the browser from reloading the page
     e.preventDefault();
 
-    // Validation: no empty fields
     if (!mealName.trim() || !foodItem.trim() || !calories.trim()) {
       setError("All fields are required.");
       return;
     }
 
-    // Validation: calories must be a number
     if (isNaN(calories) || Number(calories) <= 0) {
       setError("Calories must be a positive number.");
       return;
     }
 
-    // Clear any previous error
     setError("");
 
-    // Create a new entry object
-    const newEntry = {
+    // Dispatch addMeal action to the Redux store
+    dispatch(addMeal({
       mealName: mealName.trim(),
       foodItem: foodItem.trim(),
       calories: Number(calories),
-    };
-
-    // Update array state using spread operator (never mutate directly)
-    setEntries([...entries, newEntry]);
+    }));
 
     // Reset form fields
     setMealName("");
@@ -77,19 +60,18 @@ function FoodDiaryPage() {
     setCalories("");
   }
 
-  // Calculate daily total calories from all entries
-  const totalCalories = entries.reduce((sum, entry) => sum + entry.calories, 0);
+  function handleRemove(index) {
+    dispatch(removeMeal(index));
+  }
 
   return (
     <section className="container page-section">
       <h2>📓 Food Diary</h2>
       <p>Track what you eat each day to build healthier habits.</p>
 
-      {/* Diary Form */}
       <form className="diary-form" onSubmit={handleSubmit}>
         <div className="form-group">
           <label htmlFor="mealName">Meal Name</label>
-          {/* Controlled input: value comes from state, onChange updates state */}
           <input
             id="mealName"
             type="text"
@@ -121,18 +103,15 @@ function FoodDiaryPage() {
           />
         </div>
 
-        {/* Display validation error */}
         {error && <p className="form-error">{error}</p>}
 
         <button type="submit" className="btn-save">Save Meal</button>
       </form>
 
-      {/* Daily Total */}
       <div className="diary-total">
         <strong>Daily Total Calories:</strong> {totalCalories}
       </div>
 
-      {/* Diary Entries List */}
       {entries.length > 0 && (
         <div className="diary-entries">
           <h3>Today's Meals</h3>
@@ -141,6 +120,12 @@ function FoodDiaryPage() {
               <h4>{entry.mealName}</h4>
               <p>🥗 {entry.foodItem}</p>
               <p>🔥 {entry.calories} calories</p>
+              <button
+                className="btn-remove"
+                onClick={() => handleRemove(index)}
+              >
+                Remove
+              </button>
             </div>
           ))}
         </div>
