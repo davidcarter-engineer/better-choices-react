@@ -1,23 +1,32 @@
 /*
   --- COMPONENT: Navigation ---
-  This component renders the navigation bar using React Router's Link component.
+  This component renders the navigation bar using React Router.
 
-  Link — Replaces traditional <a> tags for internal navigation.
+  --- Link ---
+  Replaces traditional <a> tags for internal navigation.
   Unlike <a> tags, Link does NOT cause a full page reload.
   It updates the URL and renders the matching Route component instantly.
+  Usage: <Link to="/path">Text</Link>
+
+  --- NavLink ---
+  Works exactly like Link, but ALSO adds an "active" CSS class
+  automatically when the current URL matches the link's "to" path.
+  This lets us style the active page link differently (e.g., highlight it).
+  Usage: <NavLink to="/path">Text</NavLink>
 */
 
-import { Link } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
 function Navigation() {
   return (
     <nav className="main-nav" aria-label="Main navigation">
       <ul>
-        <li><Link to="/">Home</Link></li>
-        <li><Link to="/restaurants">Restaurants</Link></li>
-        <li><Link to="/favorites">Favorites</Link></li>
-        <li><Link to="/food-diary">Food Diary</Link></li>
-        <li><Link to="/nutrition-lookup">Nutrition Lookup</Link></li>
+        {/* NavLink adds className="active" when the route matches */}
+        <li><NavLink to="/" end>Home</NavLink></li>
+        <li><NavLink to="/restaurants">Restaurants</NavLink></li>
+        <li><NavLink to="/favorites">Favorites</NavLink></li>
+        <li><NavLink to="/food-diary">Food Diary</NavLink></li>
+        <li><NavLink to="/nutrition-lookup">Nutrition Lookup</NavLink></li>
       </ul>
     </nav>
   );

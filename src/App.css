@@ -80,6 +80,12 @@ body {
   transform: translateY(-1px);
 }
 
+/* NavLink automatically adds .active class to the current route link */
+.main-nav a.active {
+  background-color: rgba(255, 255, 255, 0.25);
+  border-bottom: 2px solid var(--white);
+}
+
 .hero {
   padding: 5rem 0 3.5rem;
   background: radial-gradient(circle at top right, #e8d5f5 0%, transparent 45%);
@@ -148,6 +154,46 @@ body {
   text-align: center;
   padding: 1rem 0;
   margin-top: 1.5rem;
+}
+
+.page-section {
+  padding: 3rem 0;
+}
+
+.page-section h2 {
+  color: var(--primary-purple);
+  margin-bottom: 0.5rem;
+}
+
+.placeholder-note {
+  margin-top: 1rem;
+  color: var(--primary-green);
+  font-weight: 600;
+}
+
+.healthy-pick {
+  padding: 2.5rem 0;
+}
+
+.healthy-pick h3 {
+  font-size: 1.7rem;
+  color: var(--primary-purple);
+  margin-bottom: 1rem;
+}
+
+.pick-card {
+  background-color: var(--white);
+  border: 1px solid #e4d8f0;
+  border-radius: 12px;
+  padding: 1.25rem;
+  max-width: 320px;
+  box-shadow: 0 8px 18px rgba(60, 14, 90, 0.08);
+}
+
+.pick-card h4 {
+  color: var(--primary-green);
+  font-size: 1.15rem;
+  margin-bottom: 0.5rem;
 }
 
 @media (max-width: 700px) {

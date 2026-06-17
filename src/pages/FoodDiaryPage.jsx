@@ -1,14 +1,15 @@
 /*
   --- PAGE: FoodDiaryPage ---
   Placeholder page for tracking daily meals.
-  State management will be added in a future lesson.
+  In a future lesson, useState will manage diary entries.
 */
 
 function FoodDiaryPage() {
   return (
-    <section className="container">
+    <section className="container page-section">
       <h2>Food Diary</h2>
-      <p>Track your daily meals and nutritional intake here.</p>
+      <p>Track what you eat each day to build healthier habits.</p>
+      <p className="placeholder-note">📓 Feature coming soon — you'll be able to log meals and view history.</p>
     </section>
   );
 }

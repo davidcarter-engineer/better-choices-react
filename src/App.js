@@ -1,16 +1,23 @@
 /*
   --- App.js ---
-  This is the root component of the React application.
-  It now uses React Router to handle multi-page navigation.
+  Root component of the React application.
+  Uses React Router to handle multi-page navigation.
 
-  BrowserRouter — Wraps the entire app and enables routing.
+  --- React Router ---
+  A library that enables client-side navigation in React apps.
+  Pages swap instantly without a full browser reload.
+
+  --- BrowserRouter ---
+  Wraps the entire app and enables routing.
   It uses the browser's History API to keep the URL in sync
-  with the displayed page (no full page reloads).
+  with the currently displayed page (no full page reloads).
 
-  Routes — A container that holds all Route definitions.
-  It looks at the current URL and renders the first matching Route.
+  --- Routes ---
+  A container that holds all Route definitions.
+  It looks at the current URL and renders the FIRST matching Route.
 
-  Route — Defines a single URL path and the component to render.
+  --- Route ---
+  Defines a single URL path and the component (page) to render.
   Example: <Route path="/restaurants" element={<RestaurantsPage />} />
   When the URL is "/restaurants", React renders RestaurantsPage.
 */
@@ -28,7 +35,6 @@ import NutritionLookupPage from "./pages/NutritionLookupPage";
 
 function App() {
   return (
-    // {/* BrowserRouter enables client-side routing for the entire app */}
     <BrowserRouter>
       <div className="App">
         <Header />
