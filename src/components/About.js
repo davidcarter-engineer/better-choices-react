@@ -11,9 +11,9 @@ function About() {
         <p>
           Better Choices helps you make smarter food decisions in a busy world.
         </p>
+        <br />
         <p>
-          By combining nutrition data, meal tracking, and restaurant comparisons,
-          this app makes it easy to understand what you eat — and choose foods
+          By combining nutrition data, meal tracking, and restaurant comparisons, this app makes it easy to understand what you eat — and choose foods
           that support your health and wellness goals.
         </p>
       </div>

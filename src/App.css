@@ -21,6 +21,10 @@ body {
   line-height: 1.6;
 }
 
+.App {
+  overflow-x: hidden;
+}
+
 .container {
   width: min(1100px, 92%);
   margin: 0 auto;
@@ -43,6 +47,7 @@ body {
 .logo-img {
   height: 300px;
   width: auto;
+  max-width: 100%;
   display: block;
   margin: -2.5rem 0;
 }
@@ -57,6 +62,16 @@ body {
   background: var(--secondary-purple);
   padding: 0.6rem 0;
   text-align: center;
+}
+
+.nav-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: var(--white);
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.3rem 0.7rem;
 }
 
 .main-nav ul {
@@ -696,6 +711,13 @@ body {
   border-radius: 12px;
   padding: 1.5rem;
   box-shadow: 0 8px 18px rgba(60, 14, 90, 0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+.contact-card .btn-contact {
+  margin-top: auto;
+  align-self: flex-start;
 }
 
 .contact-card h4 {
@@ -797,11 +819,147 @@ body {
 }
 
 @media (max-width: 700px) {
+  .nav-toggle {
+    display: block;
+    margin: 0 auto;
+  }
+
   .main-nav ul {
-    justify-content: center;
+    display: none;
+    flex-direction: column;
+    gap: 0.25rem;
+    padding: 0.5rem 0;
+  }
+
+  .main-nav ul.nav-open {
+    display: flex;
+  }
+
+  .header-brand {
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .logo-img {
+    height: 120px;
+    margin: 0;
+  }
+
+  .logo {
+    font-size: 1.8rem;
   }
 
   .hero {
-    padding-top: 4rem;
+    padding-top: 2.5rem;
   }
+
+  .restaurant-grid {
+    flex-direction: column;
+  }
+
+  .restaurant-link-card {
+    flex: 1 1 100%;
+  }
+
+  .healthy-item {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .healthy-item-right {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .diary-layout {
+    flex-direction: column;
+  }
+
+  .contact-options {
+    flex-direction: column;
+  }
+
+  .nutrition-details {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}
+
+/* --- Restaurant Link Cards (image grid) --- */
+.restaurant-link-card {
+  flex: 1 1 240px;
+  background-color: var(--white);
+  border: 1px solid #e4d8f0;
+  border-radius: 12px;
+  padding: 1.25rem;
+  text-align: center;
+  text-decoration: none;
+  color: var(--text-dark);
+  box-shadow: 0 8px 18px rgba(60, 14, 90, 0.08);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.restaurant-link-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 22px rgba(60, 14, 90, 0.14);
+}
+
+.restaurant-link-card h4 {
+  color: var(--primary-green);
+  margin-top: 0.75rem;
+  font-size: 1.15rem;
+}
+
+.restaurant-link-img {
+  width: 100%;
+  height: 120px;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+/* --- Restaurant Detail Page --- */
+.restaurant-detail-header {
+  text-align: center;
+  margin: 1.5rem 0;
+}
+
+.restaurant-detail-img {
+  width: 200px;
+  height: 120px;
+  object-fit: contain;
+}
+
+.restaurant-detail-header h2 {
+  color: var(--primary-purple);
+  margin-top: 0.5rem;
+}
+
+.healthy-items-list {
+  list-style: none;
+  padding: 0;
+  margin-top: 1rem;
+  max-width: 100%;
+}
+
+.healthy-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background-color: var(--white);
+  border: 1px solid #e4d8f0;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.healthy-item-right {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.healthy-item-cal {
+  font-weight: 600;
+  color: var(--primary-green);
+  white-space: nowrap;
 }

@@ -29,10 +29,12 @@ import Navigation from "./components/Navigation";
 import Footer from "./components/Footer";
 import HomePage from "./pages/HomePage";
 import RestaurantsPage from "./pages/RestaurantsPage";
+import RestaurantDetailPage from "./pages/RestaurantDetailPage";
 import FavoritesPage from "./pages/FavoritesPage";
 import FoodDiaryPage from "./pages/FoodDiaryPage";
 import AboutPage from "./pages/AboutPage";
 import ContactPage from "./pages/ContactPage";
+import DisclaimerPage from "./pages/DisclaimerPage";
 import NutritionLookupPage from "./pages/NutritionLookupPage";
 
 function App() {
@@ -47,10 +49,12 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/restaurants" element={<RestaurantsPage />} />
+            <Route path="/restaurants/:slug" element={<RestaurantDetailPage />} />
             <Route path="/favorites" element={<FavoritesPage />} />
             <Route path="/food-diary" element={<FoodDiaryPage />} />
             <Route path="/nutrition-lookup" element={<NutritionLookupPage />} />
             <Route path="/contact" element={<ContactPage />} />
+            <Route path="/disclaimer" element={<DisclaimerPage />} />
           </Routes>
         </main>
         <Footer />
