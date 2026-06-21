@@ -42,29 +42,27 @@ export function AuthProvider({ children }) {
   // On mount, if a token exists in localStorage, fetch the user profile
   useEffect(() => {
     if (token) {
-      fetchProfile();
+      const loadProfile = async () => {
+        try {
+          const res = await fetch(`${API_URL}/api/profile`, {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          if (res.ok) {
+            const data = await res.json();
+            setUser(data.user);
+          } else {
+            logout();
+          }
+        } catch {
+          logout();
+        }
+        setLoading(false);
+      };
+      loadProfile();
     } else {
       setLoading(false);
     }
-  }, []);
-
-  async function fetchProfile() {
-    try {
-      const res = await fetch(`${API_URL}/api/profile`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        setUser(data.user);
-      } else {
-        // Token is invalid/expired — clear it
-        logout();
-      }
-    } catch {
-      logout();
-    }
-    setLoading(false);
-  }
+  }, [token]);
 
   async function login(email, password) {
     const url = `${API_URL}/api/auth/login`;

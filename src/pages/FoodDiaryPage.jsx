@@ -8,7 +8,7 @@
 
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchDiaryEntries, addMealAPI, removeMealAPI, setSelectedDate } from "../store/diarySlice";
+import { fetchDiaryEntries, addMealAPI, removeMealAPI } from "../store/diarySlice";
 import DiaryCalendar from "../components/DiaryCalendar";
 
 const API_KEY = "DEMO_KEY";
