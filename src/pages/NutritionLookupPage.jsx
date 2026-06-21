@@ -21,7 +21,7 @@
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { searchNutrition, clearResults } from "../store/nutritionSlice";
-import { addFavorite } from "../store/favoritesSlice";
+import { addFavoriteAPI } from "../store/favoritesSlice";
 
 function NutritionLookupPage() {
   // Local state for the controlled search input
@@ -101,7 +101,7 @@ function NutritionLookupPage() {
               <div className="card-actions">
                 <button
                   className={favorites.some((f) => f.name === food.name) ? "btn-favorited" : "btn-favorite"}
-                  onClick={() => dispatch(addFavorite({ name: food.name, calories: food.calories, protein: food.protein, carbs: food.carbs, fat: food.fat }))}
+                  onClick={() => dispatch(addFavoriteAPI({ name: food.name, calories: food.calories, protein: food.protein, carbs: food.carbs, fat: food.fat }))}
                   disabled={favorites.some((f) => f.name === food.name)}
                 >
                   {favorites.some((f) => f.name === food.name) ? "✓ Saved" : "♡ Save to Favorites"}

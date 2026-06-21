@@ -6,9 +6,9 @@
   - Entries stored by date and persisted in localStorage
 */
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { addMeal, removeMeal } from "../store/diarySlice";
+import { fetchDiaryEntries, addMealAPI, removeMealAPI, setSelectedDate } from "../store/diarySlice";
 import DiaryCalendar from "../components/DiaryCalendar";
 
 const API_KEY = "DEMO_KEY";
@@ -40,12 +40,17 @@ function FoodDiaryPage() {
 
   // Read from Redux store
   const selectedDate = useSelector((state) => state.diary.selectedDate);
-  const entriesByDate = useSelector((state) => state.diary.entriesByDate);
+  const entries = useSelector((state) => state.diary.entries);
   const dispatch = useDispatch();
 
-  // Get entries for the selected date
-  const entries = entriesByDate[selectedDate] || [];
-  const totalCalories = entries.reduce((sum, entry) => sum + entry.calories, 0);
+  // Fetch diary entries from API on mount
+  useEffect(() => {
+    dispatch(fetchDiaryEntries());
+  }, [dispatch]);
+
+  // Filter entries for the selected date
+  const dailyEntries = entries.filter((e) => e.date === selectedDate);
+  const totalCalories = dailyEntries.reduce((sum, entry) => sum + entry.calories, 0);
 
   // Format the selected date for display
   function formatDisplayDate(dateStr) {
@@ -74,7 +79,8 @@ function FoodDiaryPage() {
 
     setError("");
 
-    dispatch(addMeal({
+    dispatch(addMealAPI({
+      date: selectedDate,
       mealName: mealName.trim(),
       foodItem: foodItem.trim(),
       calories: Number(calories),
@@ -85,8 +91,8 @@ function FoodDiaryPage() {
     setCalories("");
   }
 
-  function handleRemove(index) {
-    dispatch(removeMeal(index));
+  function handleRemove(id) {
+    dispatch(removeMealAPI(id));
   }
 
   async function handleLookup(e) {
@@ -292,11 +298,11 @@ function FoodDiaryPage() {
       </div>
 
       {/* Entries for selected date */}
-      {entries.length > 0 && (
+      {dailyEntries.length > 0 && (
         <div className="diary-entries">
           <h3>Meals</h3>
-          {entries.map((entry, index) => (
-            <div key={index} className="diary-entry-card">
+          {dailyEntries.map((entry, index) => (
+            <div key={entry._id} className="diary-entry-card">
               <h4>{entry.mealName}</h4>
               <p>🥗 {entry.foodItem}</p>
               <p>🔥 {entry.calories} calories</p>
@@ -314,7 +320,7 @@ function FoodDiaryPage() {
                 </button>
                 <button
                   className="btn-remove"
-                  onClick={() => handleRemove(index)}
+                  onClick={() => handleRemove(entry._id)}
                 >
                   Remove
                 </button>
@@ -336,7 +342,7 @@ function FoodDiaryPage() {
         </div>
       )}
 
-      {entries.length === 0 && (
+      {dailyEntries.length === 0 && (
         <p className="placeholder-note">No meals logged for this day.</p>
       )}
     </section>

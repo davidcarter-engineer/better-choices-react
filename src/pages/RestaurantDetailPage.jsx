@@ -1,6 +1,6 @@
 import { useParams, Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { addFavorite } from "../store/favoritesSlice";
+import { addFavoriteAPI } from "../store/favoritesSlice";
 import restaurantsData from "../data/restaurants";
 
 function RestaurantDetailPage() {
@@ -25,7 +25,7 @@ function RestaurantDetailPage() {
   }
 
   function handleFavorite(item) {
-    dispatch(addFavorite({
+    dispatch(addFavoriteAPI({
       name: item.meal,
       calories: item.calories,
       restaurant: restaurant.name,

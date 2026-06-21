@@ -1,28 +1,30 @@
 /*
   --- PAGE: FavoritesPage ---
-  Displays saved favorite restaurants from the Redux store.
+  Displays saved favorites fetched from the Better Choices API.
+  Favorites are stored in MongoDB and tied to the authenticated user.
 
-  --- useSelector ---
-  Reads the favorites array from the Redux store.
-  This component automatically re-renders when favorites change.
-
-  --- useDispatch ---
-  Dispatches the removeFavorite action to remove a restaurant
-  from the centralized state.
+  Uses removeFavoriteAPI to DELETE /api/favorites/:id when removing.
 */
 
 import { useSelector, useDispatch } from "react-redux";
-import { removeFavorite } from "../store/favoritesSlice";
+import { removeFavoriteAPI } from "../store/favoritesSlice";
 
 function FavoritesPage() {
-  // useSelector: read favorites from the Redux store
   const favorites = useSelector((state) => state.favorites.favorites);
-
-  // useDispatch: get dispatch function to send actions
+  const loading = useSelector((state) => state.favorites.loading);
   const dispatch = useDispatch();
 
-  function handleRemove(name) {
-    dispatch(removeFavorite(name));
+  function handleRemove(id) {
+    dispatch(removeFavoriteAPI(id));
+  }
+
+  if (loading) {
+    return (
+      <section className="container page-section">
+        <h2>⭐ My Favorites</h2>
+        <p>Loading favorites...</p>
+      </section>
+    );
   }
 
   return (
@@ -36,15 +38,30 @@ function FavoritesPage() {
         </p>
       ) : (
         <div className="restaurant-grid">
-          {favorites.map((item, index) => (
-            <article key={index} className="restaurant-card">
+          {favorites.map((item) => (
+            <article key={item._id} className="restaurant-card">
               <h4>{item.name}</h4>
-              <p className="card-detail">⭐ Healthy Score: {item.healthyScore}/10</p>
-              <p className="card-detail">🥗 Try: {item.recommendedMeal}</p>
-              <p className="card-detail">🔥 {item.calories} calories</p>
+              {item.restaurant && (
+                <p className="card-detail">🏪 {item.restaurant}</p>
+              )}
+              {item.calories !== undefined && (
+                <p className="card-detail">🔥 {item.calories} calories</p>
+              )}
+              {item.protein !== undefined && (
+                <p className="card-detail">💪 Protein: {item.protein}g</p>
+              )}
+              {item.carbs !== undefined && (
+                <p className="card-detail">🍞 Carbs: {item.carbs}g</p>
+              )}
+              {item.fat !== undefined && (
+                <p className="card-detail">🧈 Fat: {item.fat}g</p>
+              )}
+              {item.healthyScore !== undefined && (
+                <p className="card-detail">⭐ Score: {item.healthyScore}/10</p>
+              )}
               <button
                 className="btn-remove"
-                onClick={() => handleRemove(item.name)}
+                onClick={() => handleRemove(item._id)}
               >
                 Remove
               </button>

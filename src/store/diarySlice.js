@@ -1,73 +1,125 @@
 /*
   --- SLICE: diarySlice ---
-  Manages the Food Diary state organized by date.
-  Uses localStorage to persist data across browser sessions.
+  Manages Food Diary state backed by the Better Choices API (MongoDB).
+  Entries sync between web and mobile for the same user account.
 
-  State shape:
-  {
-    entriesByDate: { "2025-01-15": [{ mealName, foodItem, calories }], ... },
-    selectedDate: "2025-01-15"
-  }
+  API Endpoints:
+    GET    /api/diary       — fetch all entries
+    POST   /api/diary       — add a new entry
+    DELETE /api/diary/:id   — remove an entry
 */
 
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-// Load saved diary data from localStorage
-function loadFromStorage() {
-  try {
-    const saved = localStorage.getItem("betterChoicesDiary");
-    return saved ? JSON.parse(saved) : {};
-  } catch {
-    return {};
-  }
+const API_URL = "http://localhost:5001";
+
+function getToken() {
+  return localStorage.getItem("token");
 }
 
-// Save diary data to localStorage
-function saveToStorage(entriesByDate) {
-  try {
-    localStorage.setItem("betterChoicesDiary", JSON.stringify(entriesByDate));
-  } catch {
-    // Storage full or unavailable — fail silently
-  }
-}
+// Fetch all diary entries for the authenticated user
+export const fetchDiaryEntries = createAsyncThunk(
+  "diary/fetchEntries",
+  async (_, { rejectWithValue }) => {
+    const token = getToken();
+    if (!token) return [];
 
-// Today's date in YYYY-MM-DD format
+    try {
+      const res = await fetch(`${API_URL}/api/diary`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (!res.ok) return rejectWithValue(data.message);
+      return data;
+    } catch (err) {
+      return rejectWithValue("Failed to fetch diary");
+    }
+  }
+);
+
+// Add a new diary entry
+export const addMealAPI = createAsyncThunk(
+  "diary/addMeal",
+  async (mealData, { rejectWithValue }) => {
+    const token = getToken();
+    if (!token) return rejectWithValue("Not authenticated");
+
+    try {
+      const res = await fetch(`${API_URL}/api/diary`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(mealData),
+      });
+      const data = await res.json();
+      if (!res.ok) return rejectWithValue(data.message);
+      return data;
+    } catch (err) {
+      return rejectWithValue("Failed to save meal");
+    }
+  }
+);
+
+// Remove a diary entry
+export const removeMealAPI = createAsyncThunk(
+  "diary/removeMeal",
+  async (id, { rejectWithValue }) => {
+    const token = getToken();
+    if (!token) return rejectWithValue("Not authenticated");
+
+    try {
+      const res = await fetch(`${API_URL}/api/diary/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (!res.ok) return rejectWithValue(data.message);
+      return id;
+    } catch (err) {
+      return rejectWithValue("Failed to remove meal");
+    }
+  }
+);
+
 const today = new Date().toISOString().split("T")[0];
 
 const diarySlice = createSlice({
   name: "diary",
   initialState: {
-    entriesByDate: loadFromStorage(),
+    entries: [],
     selectedDate: today,
+    loading: false,
   },
   reducers: {
-    // Sets the currently selected date (when user clicks a calendar day)
     setSelectedDate(state, action) {
       state.selectedDate = action.payload;
     },
-    // Adds a meal to the selected date
-    addMeal(state, action) {
-      const date = state.selectedDate;
-      if (!state.entriesByDate[date]) {
-        state.entriesByDate[date] = [];
-      }
-      state.entriesByDate[date].push(action.payload);
-      saveToStorage(state.entriesByDate);
+    clearDiary(state) {
+      state.entries = [];
     },
-    // Removes a meal by index from the selected date
-    removeMeal(state, action) {
-      const date = state.selectedDate;
-      if (state.entriesByDate[date]) {
-        state.entriesByDate[date].splice(action.payload, 1);
-        // Clean up empty dates
-        if (state.entriesByDate[date].length === 0) {
-          delete state.entriesByDate[date];
-        }
-        saveToStorage(state.entriesByDate);
-      }
-    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchDiaryEntries.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchDiaryEntries.fulfilled, (state, action) => {
+        state.entries = action.payload;
+        state.loading = false;
+      })
+      .addCase(fetchDiaryEntries.rejected, (state) => {
+        state.loading = false;
+      })
+      .addCase(addMealAPI.fulfilled, (state, action) => {
+        state.entries.push(action.payload);
+      })
+      .addCase(removeMealAPI.fulfilled, (state, action) => {
+        state.entries = state.entries.filter((e) => e._id !== action.payload);
+      });
   },
 });
 
-export const { setSelectedDate, addMeal, removeMeal } = diarySlice.actions;
+export const { setSelectedDate, clearDiary } = diarySlice.actions;
 export default diarySlice.reducer;

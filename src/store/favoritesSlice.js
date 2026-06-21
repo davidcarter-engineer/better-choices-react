@@ -1,57 +1,132 @@
 /*
   --- SLICE: favoritesSlice ---
+  Manages favorites state backed by the Better Choices API.
 
-  --- What is a Slice? ---
-  A slice is a piece of the Redux store that manages ONE part of state.
-  It bundles together:
-    - Initial state (the starting data)
-    - Reducers (functions that update the state)
-    - Actions (automatically generated from reducer names)
+  All favorites are stored in MongoDB and fetched/saved via:
+    GET  /api/favorites       — load user's favorites
+    POST /api/favorites       — save a new favorite
+    DELETE /api/favorites/:id  — remove a favorite
 
-  --- Reducers ---
-  Reducers describe HOW state changes in response to an action.
-  Redux Toolkit uses Immer under the hood, so we can write code that
-  "mutates" state directly (e.g., state.favorites.push()), and Immer
-  will produce a new immutable copy behind the scenes.
-
-  --- Actions ---
-  Actions are objects that describe WHAT happened.
-  Redux Toolkit auto-generates action creators from each reducer name.
-  Example: favoritesSlice.actions.addFavorite
-  Dispatching an action triggers the matching reducer.
+  The JWT token from localStorage is included in all requests.
+  localStorage is no longer used to store favorites data.
 */
 
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+
+const API_URL = "http://localhost:5001";
+
+function getToken() {
+  return localStorage.getItem("token");
+}
+
+// GET /api/favorites — fetch all favorites for the authenticated user
+export const fetchFavorites = createAsyncThunk(
+  "favorites/fetchFavorites",
+  async (_, { rejectWithValue }) => {
+    const token = getToken();
+    if (!token) return [];
+
+    console.log("GET /api/favorites");
+    try {
+      const res = await fetch(`${API_URL}/api/favorites`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      console.log("GET /api/favorites response:", res.status, data);
+      if (!res.ok) return rejectWithValue(data.message);
+      return data;
+    } catch (err) {
+      console.error("GET /api/favorites error:", err);
+      return rejectWithValue("Failed to fetch favorites");
+    }
+  }
+);
+
+// POST /api/favorites — save a new favorite
+export const addFavoriteAPI = createAsyncThunk(
+  "favorites/addFavoriteAPI",
+  async (favoriteData, { rejectWithValue }) => {
+    const token = getToken();
+    if (!token) return rejectWithValue("Not authenticated");
+
+    console.log("POST /api/favorites", favoriteData);
+    try {
+      const res = await fetch(`${API_URL}/api/favorites`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(favoriteData),
+      });
+      const data = await res.json();
+      console.log("POST /api/favorites response:", res.status, data);
+      if (!res.ok) return rejectWithValue(data.message);
+      return data;
+    } catch (err) {
+      console.error("POST /api/favorites error:", err);
+      return rejectWithValue("Failed to save favorite");
+    }
+  }
+);
+
+// DELETE /api/favorites/:id — remove a favorite
+export const removeFavoriteAPI = createAsyncThunk(
+  "favorites/removeFavoriteAPI",
+  async (id, { rejectWithValue }) => {
+    const token = getToken();
+    if (!token) return rejectWithValue("Not authenticated");
+
+    console.log("DELETE /api/favorites/" + id);
+    try {
+      const res = await fetch(`${API_URL}/api/favorites/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      console.log("DELETE /api/favorites response:", res.status, data);
+      if (!res.ok) return rejectWithValue(data.message);
+      return id;
+    } catch (err) {
+      console.error("DELETE /api/favorites error:", err);
+      return rejectWithValue("Failed to remove favorite");
+    }
+  }
+);
 
 const favoritesSlice = createSlice({
   name: "favorites",
   initialState: {
     favorites: [],
+    loading: false,
   },
   reducers: {
-    // Adds a restaurant to favorites
-    addFavorite(state, action) {
-      // action.payload = the restaurant object passed when dispatching
-      // Only add if not already in favorites (prevent duplicates)
-      const exists = state.favorites.find(
-        (item) => item.name === action.payload.name
-      );
-      if (!exists) {
+    clearFavorites(state) {
+      state.favorites = [];
+    },
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(fetchFavorites.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchFavorites.fulfilled, (state, action) => {
+        state.favorites = action.payload;
+        state.loading = false;
+      })
+      .addCase(fetchFavorites.rejected, (state) => {
+        state.loading = false;
+      })
+      .addCase(addFavoriteAPI.fulfilled, (state, action) => {
         state.favorites.push(action.payload);
-      }
-    },
-    // Removes a restaurant from favorites by name
-    removeFavorite(state, action) {
-      // action.payload = the restaurant name to remove
-      state.favorites = state.favorites.filter(
-        (item) => item.name !== action.payload
-      );
-    },
+      })
+      .addCase(removeFavoriteAPI.fulfilled, (state, action) => {
+        state.favorites = state.favorites.filter(
+          (item) => item._id !== action.payload
+        );
+      });
   },
 });
 
-// Export actions so components can dispatch them
-export const { addFavorite, removeFavorite } = favoritesSlice.actions;
-
-// Export reducer so the store can use it
+export const { clearFavorites } = favoritesSlice.actions;
 export default favoritesSlice.reducer;

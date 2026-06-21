@@ -963,3 +963,170 @@ body {
   color: var(--primary-green);
   white-space: nowrap;
 }
+
+/* --- Auth Forms --- */
+.auth-form {
+  background-color: var(--white);
+  border: 1px solid #e4d8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+  max-width: 400px;
+  box-shadow: 0 8px 18px rgba(60, 14, 90, 0.08);
+}
+
+.auth-switch {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+}
+
+.auth-switch a {
+  color: var(--secondary-purple);
+  font-weight: 600;
+}
+
+/* --- Nav User Dropdown --- */
+.nav-user-dropdown {
+  position: relative;
+}
+
+.nav-dropdown-toggle {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  color: var(--white);
+  font-weight: 600;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-family: inherit;
+  transition: background-color 0.2s ease;
+}
+
+.nav-dropdown-toggle:hover {
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.nav-dropdown-menu {
+  position: absolute;
+  right: 0;
+  top: 100%;
+  margin-top: 0.4rem;
+  background: var(--white);
+  border: 1px solid #e4d8f0;
+  border-radius: 8px;
+  box-shadow: 0 8px 18px rgba(60, 14, 90, 0.15);
+  min-width: 140px;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.nav-dropdown-menu a,
+.nav-dropdown-menu button {
+  display: block;
+  width: 100%;
+  padding: 0.6rem 1rem;
+  text-align: left;
+  text-decoration: none;
+  color: var(--text-dark);
+  font-size: 0.9rem;
+  font-weight: 500;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.nav-dropdown-menu a:hover,
+.nav-dropdown-menu button:hover {
+  background-color: var(--light-bg);
+  color: var(--primary-purple);
+}
+
+/* --- Profile Page --- */
+.profile-form {
+  background-color: var(--white);
+  border: 1px solid #e4d8f0;
+  border-radius: 12px;
+  padding: 1.5rem;
+  margin-top: 1.5rem;
+  max-width: 450px;
+  box-shadow: 0 8px 18px rgba(60, 14, 90, 0.08);
+}
+
+.profile-pic-section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.profile-pic-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.profile-pic-preview {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #e4d8f0;
+}
+
+.profile-pic-placeholder {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: var(--light-bg);
+  border: 2px dashed #d1c4e9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  color: var(--secondary-purple);
+}
+
+.btn-upload {
+  background-color: var(--secondary-purple);
+  color: var(--white);
+  padding: 0.4rem 1rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-upload:hover {
+  background-color: var(--primary-purple);
+}
+
+/* --- Nav Profile Pic (small circle next to Welcome) --- */
+.nav-profile-pic {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  object-fit: cover;
+  vertical-align: middle;
+  margin-right: 0.4rem;
+}
+
+/* --- Camera Section --- */
+.camera-section {
+  margin-bottom: 1.25rem;
+}
+
+.camera-video {
+  width: 100%;
+  max-width: 320px;
+  border-radius: 8px;
+  border: 2px solid #e4d8f0;
+}
+
+.camera-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}

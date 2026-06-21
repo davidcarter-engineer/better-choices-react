@@ -9,11 +9,13 @@
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { setSelectedDate } from "../store/diarySlice";
-
 function DiaryCalendar() {
   const dispatch = useDispatch();
   const selectedDate = useSelector((state) => state.diary.selectedDate);
-  const entriesByDate = useSelector((state) => state.diary.entriesByDate);
+  const entries = useSelector((state) => state.diary.entries);
+
+  // Get unique dates that have entries
+  const datesWithEntries = [...new Set(entries.map((e) => e.date))];
 
   // Track which month/year is being viewed
   const [viewDate, setViewDate] = useState(new Date());
@@ -87,7 +89,7 @@ function DiaryCalendar() {
         ))}
         {days.map((day) => {
           const dateStr = formatDate(year, month, day);
-          const hasEntries = entriesByDate[dateStr] && entriesByDate[dateStr].length > 0;
+          const hasEntries = datesWithEntries.includes(dateStr);
           const isSelected = dateStr === selectedDate;
           const isToday = dateStr === today.toISOString().split("T")[0];
 
